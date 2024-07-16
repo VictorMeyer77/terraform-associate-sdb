@@ -19,18 +19,26 @@ variable "tags" {
   default     = {}
 }
 
-#variable "public_subnet_name" {
-#  default = "sdbsnetdev01"
-#}
-#
-#variable "public_subnet_address_prefix" {
-#  default = "10.0.1.0/24"
-#}
-#
-#variable "private_subnet_name" {
-#  default = "sdbsnetdev02"
-#}
-#
-#variable "private_subnet_address_prefix" {
-#  default = "10.0.2.0/24"
-#}
+variable "containers" {
+  type = list(string)
+  description = "List of containers to create in storage"
+  default = ["bronze", "silver", "gold"]
+}
+
+variable "vnet_address_space" {
+  type        = string
+  description = "The address space for the spoke Virtual Network"
+  default     = "10.0.0.0/16"
+}
+
+variable "private_subnet_address_prefixes" {
+  type        = list(string)
+  description = "Address space for private Databricks subnet"
+  default     = ["10.0.2.0/24"]
+}
+
+variable "public_subnet_address_prefixes" {
+  type        = list(string)
+  description = "Address space for public Databricks subnet"
+  default     = ["10.0.1.0/24"]
+}

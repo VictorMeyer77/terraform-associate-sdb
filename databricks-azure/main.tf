@@ -1,5 +1,3 @@
-# configure terraform itself
-# https://learning-ocean.com/tutorials/terraform/terraform-configuration/
 terraform {
 
   required_providers {
@@ -13,57 +11,21 @@ terraform {
 
 }
 
-# configure provider. When "alias" missing, default provider
-# https://developer.hashicorp.com/terraform/language/providers/configuration
 provider "azurerm" {
   features {}
 }
 
-# access the configuration of the AzureRM provider
-# https://developer.hashicorp.com/terraform/language/data-sources
 data "azurerm_client_config" "current" {
 
 }
 
-# create a resource group
-resource "azurerm_resource_group" "rg" {
-  name     = "${var.project}${var.environment}rg"
+locals {
+  rg_name     = "${var.environment}${var.project}rg"
+  rg_location = var.resource_group_location
+}
+
+resource "azurerm_resource_group" "this" {
+  name     = local.rg_name
   location = var.resource_group_location
   tags     = var.tags
 }
-
-# create a virtual network within the resource group
-#resource "azurerm_virtual_network" "vnet" {
-#  name                = "sdbvnetdev"
-#  resource_group_name = azurerm_resource_group.rg.name
-#  location            = azurerm_resource_group.rg.location
-#  address_space       = ["10.0.0.0/16"]
-#
-#  tags = {
-#    environment = "dev"
-#  }
-#}
-#
-## public subnet
-#resource "azurerm_subnet" "public_subnet" {
-#  name                 = "sdbpsnetdev"
-#  resource_group_name  = azurerm_resource_group.rg.name
-#  virtual_network_name = azurerm_virtual_network.vnet.name
-#  address_prefixes     = [var.public_subnet_address_prefix]
-#
-#  tags = {
-#    environment = "dev"
-#  }
-#}
-#
-## private subnet
-#resource "azurerm_subnet" "private_subnet" {
-#  name                 = var.private_subnet_name
-#  resource_group_name  = azurerm_resource_group.rg.name
-#  virtual_network_name = azurerm_virtual_network.vnet.name
-#  address_prefixes     = [var.private_subnet_address_prefix]
-#
-#  tags = {
-#    environment = "dev"
-#  }
-#}

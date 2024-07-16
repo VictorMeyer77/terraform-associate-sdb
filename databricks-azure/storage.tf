@@ -1,25 +1,32 @@
-resource "azurerm_storage_account" "storage" {
-  name                     = "${var.project}${var.environment}sto"
-  resource_group_name      = azurerm_resource_group.rg.name
-  location                 = azurerm_resource_group.rg.location
+resource "azurerm_storage_account" "this" {
+  name                     = "${var.environment}${var.project}sto"
+  resource_group_name      = azurerm_resource_group.this.name
+  location                 = azurerm_resource_group.this.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
   tags                     = var.tags
 }
 
-resource "azurerm_log_analytics_workspace" "log" {
-  name                = "${var.project}${var.environment}log"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+resource "azurerm_storage_container" "this" {
+  for_each = toset(var.containers)
+  name                  = each.key
+  storage_account_name  = azurerm_storage_account.this.name
+  container_access_type = "private"
+}
+
+resource "azurerm_log_analytics_workspace" "this" {
+  name                = "${var.environment}${var.project}log"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
   sku                 = "PerGB2018"
   retention_in_days   = 30
   tags                = var.tags
 }
 
-resource "azurerm_key_vault" "key_vault" {
-  name                        = "${var.project}${var.environment}kv"
-  resource_group_name         = azurerm_resource_group.rg.name
-  location                    = azurerm_resource_group.rg.location
+resource "azurerm_key_vault" "this" {
+  name                        = "${var.environment}${var.project}kv"
+  resource_group_name         = azurerm_resource_group.this.name
+  location                    = azurerm_resource_group.this.location
   enabled_for_disk_encryption = true
   tenant_id                   = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days  = 7
