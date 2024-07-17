@@ -1,3 +1,23 @@
+variable "subscription_id" {
+  type        = string
+  description = "(Required) Azure subscription ID"
+}
+
+variable "client_id" {
+  type        = string
+  description = "(Required) Azure client ID"
+}
+
+variable "client_secret" {
+  type        = string
+  description = "(Required) Azure client secret"
+}
+
+variable "tenant_id" {
+  type        = string
+  description = "(Required) Azure tenant ID"
+}
+
 variable "environment" {
   type        = string
   description = "(Required) Environment name"
@@ -20,9 +40,9 @@ variable "tags" {
 }
 
 variable "containers" {
-  type = list(string)
+  type        = list(string)
   description = "List of containers to create in storage"
-  default = ["bronze", "silver", "gold"]
+  default     = ["bronze", "silver", "gold"]
 }
 
 variable "vnet_address_space" {
